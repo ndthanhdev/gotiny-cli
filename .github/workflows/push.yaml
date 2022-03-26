@@ -9,6 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+
       - uses: "./.github/workflows/build.yaml"
         with:
           ref: ${{ github.ref }}
