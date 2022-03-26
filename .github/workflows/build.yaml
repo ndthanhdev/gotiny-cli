@@ -1,0 +1,70 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: build
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+      ver:
+        required: false
+        type: string
+
+jobs:
+  build:
+    name: Build
+
+    strategy:
+      matrix:
+        os:
+          - linux
+          - darwin
+          - windows
+        arch:
+          - amd64
+          - 386
+          - arm64
+          - arm
+        exclude:
+          - os: windows
+            arch: arm
+          - os: darwin
+            arch: arm
+          - os: darwin
+            arch: 386
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "~1.17.1"
+
+      - name: Set bin os-arch
+        run: |
+          echo "BIN_NAME=${{matrix.os}}-${{matrix.arch}}" >> $GITHUB_ENV
+
+      - name: Set bin extension
+        if: ${{matrix.os == 'windows'}}
+        run: |
+          echo "BIN_NAME=${{env.BIN_NAME}}.exe" >> $GITHUB_ENV
+
+      - name: Set bin version
+        if: ${{ inputs.ver }}
+        run: |
+          echo "BIN_NAME=${{inputs.ver}}-${{env.BIN_NAME}}" >> $GITHUB_ENV
+
+      - name: Finalize binName
+        run: |
+          echo "BIN_NAME=gotiny-${{env.BIN_NAME}}" >> $GITHUB_ENV
+
+      - name: Build
+        run: |
+          go build -o ./bin/${{env.BIN_NAME}}
+        env:
+          GOOS: ${{matrix.os}}
+          GOARCH: ${{matrix.arch}}

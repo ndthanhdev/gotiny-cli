@@ -1,0 +1,14 @@
+name: push
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "./build.yaml"
+        with:
+          ref: ${{ github.ref }}
