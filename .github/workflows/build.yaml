@@ -7,7 +7,7 @@ on:
       ref:
         required: true
         type: string
-      ver:
+      version:
         required: false
         type: string
 
@@ -54,7 +54,7 @@ jobs:
           echo "BIN_NAME=${{env.BIN_NAME}}.exe" >> $GITHUB_ENV
 
       - name: Set bin version
-        if: ${{ inputs.ver }}
+        if: ${{ inputs.version }}
         run: |
           echo "BIN_NAME=${{inputs.ver}}-${{env.BIN_NAME}}" >> $GITHUB_ENV
 
@@ -68,3 +68,9 @@ jobs:
         env:
           GOOS: ${{matrix.os}}
           GOARCH: ${{matrix.arch}}
+
+      - name: Upload bin
+        uses: actions/upload-artifact@v3
+        with:
+          name: bin
+          path: ./bin/*

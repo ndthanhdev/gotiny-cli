@@ -6,18 +6,41 @@ on:
       - "v*.*.*"
 
 jobs:
-  build:
+  get_version:
+    name: Get version
+    outputs:
+      version: ${{ steps.get_version.outputs.version}}
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
 
       - id: get_version
         uses: battila7/get-version-action@v2
 
-      - uses: "./.github/workflows/build.yaml"
+  build:
+    needs:
+      - get-version
+    uses: ./.github/workflows/build.yaml
+    with:
+      ref: ${{ github.ref }}
+      version: ${{ jobs.get_version.outputs.version}}
+
+  upload-bin:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
         with:
-          ref: ${{ github.ref }}
-          ver: ${{ steps.get_version.outputs.version }}
+          name: bin
+          path: ./bin
+
+      - run: ls -la ./bin
 
       - name: Upload release artifacts
         uses: softprops/action-gh-release@v1
