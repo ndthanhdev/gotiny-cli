@@ -22,7 +22,7 @@ jobs:
 
   build:
     needs:
-      - get-version
+      - get_version
     uses: ./.github/workflows/build.yaml
     with:
       ref: ${{ github.ref }}
