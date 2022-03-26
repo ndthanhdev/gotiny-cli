@@ -35,6 +35,9 @@ jobs:
         run: |
           echo "BIN_NAME=${{env.BIN_NAME}}.exe" >> $GITHUB_ENV
 
+      - run: |
+          mkdir -p $GITHUB_WORKSPACE/bin
+
       - name: Build
         run: |
-          go build GOOS=${{matrix.os}} GOARCH=${{matrix.arch}} -o ./bin/${{env.BIN_NAME}}
+          go build GOOS=${{matrix.os}} GOARCH=${{matrix.arch}} -o $GITHUB_WORKSPACE/bin/${{env.BIN_NAME}}
