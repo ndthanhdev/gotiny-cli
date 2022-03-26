@@ -36,4 +36,4 @@ jobs:
 
       - name: Build
         run: |
-          go build GOOS=${{matrix.os}} GOARCH=${{matrix.arch}} -o {{$env.GITHUB_WORKSPACE}}/bin/${{env.BIN_NAME}}
+          go build GOOS=${{matrix.os}} GOARCH=${{matrix.arch}} -o ${{env.GITHUB_WORKSPACE}}/bin/${{env.BIN_NAME}}
