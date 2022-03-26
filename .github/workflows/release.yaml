@@ -31,10 +31,10 @@ jobs:
           echo "BIN_NAME=gotiny-${{matrix.os}}-${{matrix.arch}}" >> $GITHUB_ENV
 
       - name: Set bin extension
-        if: $matrix.os == 'windows'
+        if: ${{matrix.os}} == 'windows'
         run: |
           echo "BIN_NAME=${{env.BIN_NAME}}.exe" >> $GITHUB_ENV
 
       - name: Build
         run: |
-          go build GOOS=${matrix.os} GOARCH=${matrix.arch} -o bin/${{env.BIN_NAME}}
+          go build GOOS=${{matrix.os}} GOARCH=${{matrix.arch}} -o bin/${{env.BIN_NAME}}
