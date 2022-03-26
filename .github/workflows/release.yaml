@@ -7,8 +7,10 @@ on:
 
 jobs:
   get_version:
+    name: Get version
     outputs:
-      ver: ${{ steps.get_version.outputs.version }}
+      version: ${{ steps.get_version.outputs.version }}
+      test: ${{ steps.set_test.outputs.test }}
 
     runs-on: ubuntu-latest
     steps:
@@ -19,13 +21,18 @@ jobs:
       - id: get_version
         uses: battila7/get-version-action@v2
 
+      - run: echo "${{steps.get_version.outputs.version}}"
+
+      - id: set_test
+        run: echo "::set-output name=test::123"
+
   build:
-    needs: 
+    needs:
       - get_version
     uses: ./.github/workflows/build.yaml
     with:
       ref: ${{ github.ref }}
-      version: ${{ needs.jobs.get_version.outputs.ver}}
+      version: ${{ needs.jobs.get_version.outputs.version}}
 
   upload-bin:
     needs:
@@ -35,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: echo "Uploading version ${{ needs.jobs.get_version.outputs.ver }}"
+      - run: echo "Uploading version ${{ needs.jobs.get_version.outputs.version }} ${{needs.jobs.get_version.outputs.test}}"
 
       - uses: actions/download-artifact@v3
         with:
