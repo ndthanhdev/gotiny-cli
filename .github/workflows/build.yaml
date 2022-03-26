@@ -36,6 +36,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          echo "ref: ${{ inputs.ref }}"
+          echo "version: ${{ inputs.version }}"
+
       - uses: actions/checkout@v3
         with:
           ref: ${{ inputs.ref }}
@@ -54,7 +58,7 @@ jobs:
           echo "BIN_NAME=${{env.BIN_NAME}}.exe" >> $GITHUB_ENV
 
       - name: Set bin version
-        if:  ${{ !inputs.version }}
+        if:  ${{ inputs.version }}
         run: |
           echo "BIN_NAME=${{inputs.version}}-${{env.BIN_NAME}}" >> $GITHUB_ENV
 
