@@ -9,7 +9,7 @@ jobs:
   get_version:
     name: Get version
     outputs:
-      version: ${{ steps.get_version.outputs.version}}
+      version: ${{ steps.set_version.outputs.version}}
 
     runs-on: ubuntu-latest
     steps:
@@ -19,6 +19,10 @@ jobs:
 
       - id: get_version
         uses: battila7/get-version-action@v2
+
+      - name: Set output
+        id: set_version
+        run: echo "::set-output name=version::${{ steps.get_version.outputs.version }}"
 
   build:
     needs:
