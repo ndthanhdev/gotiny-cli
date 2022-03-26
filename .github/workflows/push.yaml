@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: push
 
 on:
@@ -7,10 +8,6 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: ndthanhdev/gotiny-cli/.github/workflows/build.yaml@develop
-        with:
-          ref: ${{ github.ref }}
+    uses: ./.github/workflows/build.yaml
+    with:
+      ref: ${{ github.ref }}
