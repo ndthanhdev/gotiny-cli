@@ -1,10 +1,9 @@
 name: Release
 
 on:
-  push: 
+  push:
     branches:
       - "*"
-
 
 jobs:
   build:
@@ -34,9 +33,6 @@ jobs:
         if: ${{matrix.os}} == 'windows'
         run: |
           echo "BIN_NAME=${{env.BIN_NAME}}.exe" >> $GITHUB_ENV
-
-      - run: |
-          mkdir -p $GITHUB_WORKSPACE/bin
 
       - name: Build
         run: |
