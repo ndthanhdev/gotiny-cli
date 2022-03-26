@@ -18,6 +18,11 @@ jobs:
           - 386
           - arm64
           - arm
+        exclude:
+          - os: darwin
+            arch: arm
+          - os: windows
+            arch: arm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
