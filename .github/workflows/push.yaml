@@ -9,6 +9,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: "./build.yaml"
+      - uses: "./.github/workflows/build.yaml"
         with:
           ref: ${{ github.ref }}
