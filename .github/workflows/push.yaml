@@ -11,6 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - run: ls -la
+
+      - run: ls -la ./.github/workflows/
+
       - uses: "./.github/workflows/build.yaml"
         with:
           ref: ${{ github.ref }}
