@@ -26,7 +26,7 @@ jobs:
     uses: ./.github/workflows/build.yaml
     with:
       ref: ${{ github.ref }}
-      version: ${{ jobs.get_version.outputs.version}}
+      version: ${{ needs.jobs.get_version.outputs.version}}
 
   upload-bin:
     needs:
