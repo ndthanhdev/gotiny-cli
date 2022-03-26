@@ -7,20 +7,6 @@ on:
       - "*"
 
 jobs:
-  set:
-    outputs:
-      test: ${{ steps.set.outputs.test }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "::set-output name=test::123"
-        id: set
-
-  get:
-    needs: set
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "test is ${{needs.jobs.set.outputs.test}}"
-
   build:
     uses: ./.github/workflows/build.yaml
     with:
