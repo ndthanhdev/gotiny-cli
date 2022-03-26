@@ -56,7 +56,7 @@ jobs:
       - name: Set bin version
         if:  ${{ !inputs.version }}
         run: |
-          echo "BIN_NAME=${{inputs.ver}}-${{env.BIN_NAME}}" >> $GITHUB_ENV
+          echo "BIN_NAME=${{inputs.version}}-${{env.BIN_NAME}}" >> $GITHUB_ENV
 
       - name: Finalize binName
         run: |
