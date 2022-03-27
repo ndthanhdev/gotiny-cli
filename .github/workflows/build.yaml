@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: build
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+      version:
+        required: false
+        type: string
+      makeTar:
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    name: Build
+
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "ref: ${{ inputs.ref }}"
+          echo "version: ${{ inputs.version }}"
+
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "~1.17.1"
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "17"
+      - run: |
+          npm i -g zx
+          npm i
+
+      - run: |
+          chmod -R +x ./misc
+
+      - run: >
+          ./misc/scripts/build.mjs
+          --makeTar ${{ inputs.makeTar }}
+          --ver ${{ inputs.version }}
+
+      - name: Upload out
+        uses: actions/upload-artifact@v3
+        with:
+          name: out
+          path: ./out/*

@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: push
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yaml
+    with:
+      ref: ${{ github.ref }}
