@@ -190,7 +190,7 @@ class Gotiny < Formula
     desc "Using gotiny.cc the lightweight, fast, secure URL shortener from the command line."
     homepage "https://github.com/ndthanhdev/gotiny-cli"
     license "MIT"
-    version "v1.0.0"
+    version "${ver}"
 
     on_macos do
       if Hardware::CPU.arm?
