@@ -1,0 +1,25 @@
+name: setup script
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+      version:
+        required: false
+        type: string
+
+jobs:
+  npm_i:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: actions/setup-nodejs@v2
+
+      - run: npm i
+        working-directory: ./.github/scripts
+  

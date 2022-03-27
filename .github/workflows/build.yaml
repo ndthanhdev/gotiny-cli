@@ -10,29 +10,14 @@ on:
       version:
         required: false
         type: string
+      makeTar:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   build:
     name: Build
-
-    strategy:
-      matrix:
-        os:
-          - linux
-          - darwin
-          - windows
-        arch:
-          - amd64
-          - 386
-          - arm64
-          - arm
-        exclude:
-          - os: windows
-            arch: arm
-          - os: darwin
-            arch: arm
-          - os: darwin
-            arch: 386
 
     runs-on: ubuntu-latest
     steps:
@@ -48,33 +33,20 @@ jobs:
         with:
           go-version: "~1.17.1"
 
-      - name: Set bin os-arch
-        run: |
-          echo "BIN_NAME=${{matrix.os}}-${{matrix.arch}}" >> $GITHUB_ENV
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "17"
+      - run: |
+          npm i
 
-      - name: Set bin extension
-        if: ${{matrix.os == 'windows'}}
-        run: |
-          echo "BIN_NAME=${{env.BIN_NAME}}.exe" >> $GITHUB_ENV
+      - run: |
+          chmod -R +x ./misc
 
-      - name: Set bin version
-        if:  ${{ inputs.version }}
-        run: |
-          echo "BIN_NAME=${{inputs.version}}-${{env.BIN_NAME}}" >> $GITHUB_ENV
-
-      - name: Finalize binName
-        run: |
-          echo "BIN_NAME=gotiny-${{env.BIN_NAME}}" >> $GITHUB_ENV
-
-      - name: Build
-        run: |
-          go build -o ./bin/${{env.BIN_NAME}}
-        env:
-          GOOS: ${{matrix.os}}
-          GOARCH: ${{matrix.arch}}
+      - run: |
+          ./misc/build.mjs --makeTar ${{ inputs.makeTar }} --ver ${{ inputs.version }}
 
       - name: Upload bin
         uses: actions/upload-artifact@v3
         with:
-          name: bin
-          path: ./bin/*
+          name: output
+          path: ./output/*
