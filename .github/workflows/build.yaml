@@ -14,6 +14,10 @@ on:
         required: false
         type: boolean
         default: false
+      genFormula:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -47,6 +51,7 @@ jobs:
           ./misc/scripts/build.mjs
           --makeTar ${{ inputs.makeTar }}
           --ver ${{ inputs.version }}
+          --genFormula ${{ inputs.genFormula }}
 
       - name: Upload out
         uses: actions/upload-artifact@v3
