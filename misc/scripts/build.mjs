@@ -117,7 +117,7 @@ async function makeTars(metas) {
       ...meta,
       tarPath,
     };
-  });
+  }, metas);
 
   console.table(metas, ["binName", "tarPath"]);
 
@@ -251,6 +251,8 @@ class Gotiny < Formula
   console.log(formula);
   fs.writeFileSync(file, formula, "utf-8");
   console.log("write done");
+
+  return metas;
 }
 
 if (argv.ver && argv.genFormula) {
@@ -259,3 +261,5 @@ if (argv.ver && argv.genFormula) {
 } else {
   console.log("skipping generating formula");
 }
+
+console.log("done");
