@@ -12,7 +12,7 @@ brew install gotiny
 **Linux:**  
 Via binary, apt(wip)
 
-**Windows:**
+**Windows:**  
 Via binary, choco(wip)
 
 ## Usage
