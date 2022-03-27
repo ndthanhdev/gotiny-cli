@@ -43,7 +43,7 @@ func Execute() {
 	var rootCmd = &cobra.Command{
 		Use:   "gotiny <long-url>",
 		Short: "Shorten any URL",
-		Long:  `Shorten any URL from terminal using gotiny.cc. A lightweight, extremely fast, secure... URL shortener.`,
+		Long:  `Shorten any URL from terminal using gotiny.cc, a lightweight, fast, secure... URL shortener.`,
 
 		Args: cobra.RangeArgs(1, 1),
 
