@@ -27,6 +27,7 @@ jobs:
     with:
       ref: ${{ github.ref }}
       version: ${{ needs.get_version.outputs.version}}
+      makeTar: true
 
   upload-bin:
     needs:
@@ -40,26 +41,13 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: bin
-          path: ./bin
+          name: out
+          path: ./out
 
-      - run: ls -la ./bin
+      - run: ls -la ./out
 
-      - uses: actions/setup-nodejs@v2
-
-      - run: npm i
-        working-directory: ./.github/scripts
-
-      - run: |
-          ./.github/scripts/make-tar.mjs
-
-      - name: Upload bin release artifacts
+      - name: Upload out release artifacts
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: ./bin/*
-
-      - name: Generate tar file for brew
-        run: |
-          mkdir -p ./bin/release
-          tar -czf ./bin/release/battila7-cli-${{ needs.get_version.outputs.version }}.tar.gz ./bin/*
+          files: ./out/*

@@ -48,8 +48,8 @@ jobs:
           --makeTar ${{ inputs.makeTar }}
           --ver ${{ inputs.version }}
 
-      - name: Upload bin
+      - name: Upload out
         uses: actions/upload-artifact@v3
         with:
-          name: output
-          path: ./output/*
+          name: out
+          path: ./out/*
