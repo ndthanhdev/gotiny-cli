@@ -37,6 +37,7 @@ jobs:
         with:
           node-version: "17"
       - run: |
+          npm i -g zx
           npm i
 
       - run: |
