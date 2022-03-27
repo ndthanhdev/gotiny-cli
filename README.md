@@ -1,5 +1,7 @@
 # gotiny-cli
 
+*A lightweight cli url shortener*
+
 Using [gotiny.cc](https://gotiny.cc) the lightweight, fast, secure URL shortener from the command line.
 
 ## Installation
