@@ -45,7 +45,7 @@ func Execute() {
 		Short: "Shorten any URL",
 		Long:  `Shorten any URL from terminal using gotiny.cc, a lightweight, fast, secure... URL shortener.`,
 
-		Version: "1.0.4",
+		Version: "1.0.6",
 
 		Args: cobra.RangeArgs(1, 1),
 
