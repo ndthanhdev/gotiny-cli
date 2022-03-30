@@ -8,6 +8,7 @@ Using [gotiny.cc](https://gotiny.cc) the lightweight, fast, secure URL shortener
 
 **Macos:**
 ```bash
+brew tap ndthanhdev/tap
 brew install gotiny
 ```
 
