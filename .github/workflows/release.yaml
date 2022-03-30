@@ -27,8 +27,6 @@ jobs:
     with:
       ref: ${{ github.ref }}
       version: ${{ needs.get_version.outputs.version}}
-      makeTar: true
-      genFormula: true
 
   upload-bin:
     needs:
