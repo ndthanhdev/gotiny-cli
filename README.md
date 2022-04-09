@@ -6,7 +6,7 @@ Using [gotiny.cc](https://gotiny.cc) the lightweight, fast, secure URL shortener
 
 ## Installation
 
-**Macos:**
+**MacOS:**
 ```bash
 brew tap ndthanhdev/tap
 brew install gotiny
@@ -26,9 +26,16 @@ gotiny google.com
 https://gotiny.cc/xxxxxx
 ```
 
+**Copy to clipboard:**  
+```
+gotiny -c google.com
+https://gotiny.cc/xxxxxx
+Copied to clipboard!
+```
+
 **Custom code:**  
 ```
-gotiny google.com -c abcdef
+gotiny google.com -l abcdef
 https://gotiny.cc/abcdef
 ```
 
