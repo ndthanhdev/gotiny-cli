@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/atotto/clipboard"
 	"github.com/spf13/cobra"
 )
 
@@ -39,6 +40,7 @@ func Execute() {
 
 	var useFallback bool
 	var custom string
+	var copy bool
 
 	var rootCmd = &cobra.Command{
 		Use:   "gotiny <long-url>",
@@ -85,30 +87,51 @@ func Execute() {
 
 			parseSuccessError = json.Unmarshal(resBody, &apiRes)
 
-			if parseSuccessError == nil {
-				shorten := apiRes[0]
-				fmt.Println("https://gotiny.cc" + "/" + shorten.Code)
-				return
+			isOk := parseSuccessError == nil
+
+			if !isOk {
+				parseErrorError = json.Unmarshal(resBody, &apiError)
+
+				if parseSuccessError == nil {
+					fmt.Println(apiError.Error.Message)
+					os.Exit(1)
+					return
+				}
+
+				fmt.Println("Failed to parse response")
+				fmt.Println(parseSuccessError)
+				fmt.Println(parseErrorError)
+				os.Exit(1)
 			}
 
-			parseErrorError = json.Unmarshal(resBody, &apiError)
+			shorten := apiRes[0]
+			shortenUrl := fmt.Sprintf("https://gotiny.cc" + "/" + shorten.Code)
 
-			if parseSuccessError == nil {
-				fmt.Println(apiError.Error.Message)
+			fmt.Println(shortenUrl)
+
+			var copyErr error = nil
+			if copy {
+				copyErr = clipboard.WriteAll(shortenUrl)
+			}
+
+			if copyErr != nil {
+				fmt.Println(copyErr)
 				os.Exit(1)
 				return
+			} else if copy && copyErr == nil {
+				fmt.Println("Copied to clipboard!")
 			}
 
-			fmt.Println("Failed to parse response")
-			fmt.Println(parseSuccessError)
-			fmt.Println(parseErrorError)
-			os.Exit(1)
+			return
+
 		},
 	}
 
-	rootCmd.Flags().StringVarP(&custom, "custom", "c", "", `Generates a custom link (e.g. gotiny.cc/custom-link). Custom codes should consist of 4-32 lowercase letters, numbers, - and/or _ symbols.`)
+	rootCmd.Flags().StringVarP(&custom, "custom", "l", "", `Generates a custom link (e.g. gotiny.cc/custom-link). Custom codes should consist of 4-32 lowercase letters, numbers, - and/or _ symbols.`)
 
 	rootCmd.Flags().BoolVar(&useFallback, "useCallback", false, "Set to false if you don't want to use a randomly generated 6-character fallback code and throw an error instead when a custom code can't be used.")
+
+	rootCmd.Flags().BoolVarP(&copy, "copy", "c", false, "Copy the shortened URL to clipboard")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
