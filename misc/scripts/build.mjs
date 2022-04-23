@@ -5,14 +5,15 @@
 import "zx/globals";
 import path from "path";
 import os from "os";
+import * as R from "ramda";
+import { $ } from "zx";
+import { readVersion, WORK_DIR } from "./utils.mjs";
 
 const IS_WIN = os.type() === "Windows_NT";
 
 if (IS_WIN) {
 	$.shell = "nu";
 }
-
-export const WORK_DIR = path.resolve(__dirname, "../..");
 
 console.log("moving to root");
 await cd(WORK_DIR);
@@ -27,7 +28,7 @@ const argv = yargs(hideBin(process.argv))
 	})
 	.parseSync();
 
-argv.ver = argv.ver || (await readVersion(WORK_DIR));
+argv.ver = await readVersion(WORK_DIR);
 
 console.log("argv", JSON.stringify(argv, null, 2));
 
@@ -40,10 +41,6 @@ if (IS_WIN) {
 } else {
 	await $`mkdir -p ${OUT_DIR}`;
 }
-
-import * as R from "ramda";
-import { $ } from "zx";
-import { readVersion } from "./utils/readVersion.mjs";
 
 const OSs = ["windows", "linux", "darwin"];
 const ARCHs = ["386", "amd64", "arm", "arm64"];
