@@ -5,6 +5,10 @@
 import "zx/globals";
 import path from "path";
 
+import * as fs from "fs/promises";
+
+$.shell = "nu";
+
 const WORK_DIR = path.resolve(__dirname, "../..");
 
 console.log("moving to root");
@@ -23,11 +27,13 @@ const argv = yargs(hideBin(process.argv))
 		default: "./out",
 	})
 	.option("local", {
-		type: 'boolean',
+		type: "boolean",
 		demandOption: false,
 		default: false,
 	})
 	.parseSync();
+
+argv.ver = argv.ver || (await readVersion());
 
 console.log("argv", JSON.stringify(argv, null, 2));
 
@@ -35,9 +41,10 @@ const OUT_DIR = path.resolve(WORK_DIR, argv.out);
 
 await $`rm -rf ${OUT_DIR}`;
 
-await $`mkdir -p ${OUT_DIR}`;
+await $`mkdir ${OUT_DIR}`;
 
 import * as R from "ramda";
+import { $ } from "zx";
 
 const OSs = ["windows", "linux", "darwin"];
 const ARCHs = ["386", "amd64", "arm", "arm64"];
@@ -103,3 +110,31 @@ async function buildAll(metas) {
 await buildAll(metas);
 
 console.log("done");
+
+async function readVersion() {
+	const rootGo = path.resolve(WORK_DIR, "cmd/root.go");
+
+	let lines = await fs.readFile(rootGo, {
+		encoding: "utf-8",
+	});
+
+	lines = lines.split(/\r?\n/);
+
+	const versionRgx = /(?<=var Version = ).+/g;
+	let versionLine = lines.find((line) => {
+		return versionRgx.test(line);
+	});
+
+	if (!versionLine) {
+		throw "Version line not found";
+	}
+
+	let verStr = versionLine.match(versionRgx)?.[0];
+	if (!verStr) {
+		throw "Version not found";
+	}
+
+	verStr = verStr.replaceAll(/\"/g, "");
+
+	return verStr;
+}
