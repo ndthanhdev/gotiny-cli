@@ -56,7 +56,7 @@ $packageArgs = @{
   #validExitCodes= @(0) #please insert other valid exit codes here
 }
 
-Install-ChocolateyPackage @packageArgs # https://docs.chocolatey.org/en-us/create/functions/install-chocolateypackage
+# Install-ChocolateyPackage @packageArgs # https://docs.chocolatey.org/en-us/create/functions/install-chocolateypackage
 #Install-ChocolateyZipPackage @packageArgs # https://docs.chocolatey.org/en-us/create/functions/install-chocolateyzippackage
 ## If you are making your own internal packages (organizations), you can embed the installer or
 ## put on internal file share and use the following instead (you'll need to add $file to the above)
@@ -131,6 +131,17 @@ Install-ChocolateyPackage @packageArgs # https://docs.chocolatey.org/en-us/creat
 ## - https://docs.chocolatey.org/en-us/create/functions/install-binfile
 ## - https://docs.chocolatey.org/en-us/create/create-packages#how-do-i-exclude-executables-from-getting-shims
 #Install-BinFile
+$arch = Get-OSArchitectureWidth
+
+if($arch -eq 32)
+{
+    $binFile = "$toolsDir\$($packageArgs.packageName)-amd32.exe"
+}
+else
+{
+    $binFile = "$toolsDir\$($packageArgs.packageName)-amd64.exe"
+}
+Install-BinFile gotiny $binFile
 
 ##PORTABLE EXAMPLE
 #$toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
