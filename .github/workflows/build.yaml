@@ -7,9 +7,6 @@ on:
       ref:
         required: true
         type: string
-      version:
-        required: false
-        type: string
 
 jobs:
   build:
@@ -19,29 +16,24 @@ jobs:
     steps:
       - run: |
           echo "ref: ${{ inputs.ref }}"
-          echo "version: ${{ inputs.version }}"
 
       - uses: actions/checkout@v3
         with:
           ref: ${{ inputs.ref }}
 
-      - uses: actions/setup-go@v2
+        # You need to run `dagger project init` locally before and commit the cue.mod directory to the repository with its contents
+      - name: Dagger
+        uses: dagger/dagger-for-github@v2
+        # See all options at https://github.com/dagger/dagger-for-github
         with:
-          go-version: "~1.17.1"
-
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "17"
-      - run: |
-          npm i -g zx
-          npm i
-
-      - run: |
-          chmod -R +x ./misc
-
-      - run: >
-          ./misc/scripts/build.mjs
-          --ver ${{ inputs.version }}
+          version: 0.2
+          workdir: ./misc/dagger
+          # To pin external dependencies, you can use `project update github.com/[package-source]@v[n]`
+          cmds: |
+            project update
+            do build -l=debug --log-format=plain
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload out
         uses: actions/upload-artifact@v3

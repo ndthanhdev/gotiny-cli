@@ -1,10 +1,9 @@
 "use strict";
 import path from "path";
 import * as fs from "fs/promises";
-import { WORK_DIR } from "./build";
 
-export async function readVersion() {
-	const rootGo = path.resolve(WORK_DIR, "cmd/root.go");
+export async function readVersion(workDir) {
+	const rootGo = path.resolve(workDir, "cmd/root.go");
 
 	let lines = await fs.readFile(rootGo, {
 		encoding: "utf-8",

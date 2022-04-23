@@ -4,9 +4,13 @@
 
 import "zx/globals";
 import path from "path";
+import os from "os";
 
+const IS_WIN = os.type() === "Windows_NT";
 
-$.shell = "nu";
+if (IS_WIN) {
+	$.shell = "nu";
+}
 
 export const WORK_DIR = path.resolve(__dirname, "../..");
 
@@ -18,21 +22,12 @@ import { hideBin } from "yargs/helpers";
 
 console.log("parsing argv");
 const argv = yargs(hideBin(process.argv))
-	.options("ver", {
-		alias: "v",
-		demandOption: false,
-	})
 	.options("out", {
 		default: "./out",
 	})
-	.option("local", {
-		type: "boolean",
-		demandOption: false,
-		default: false,
-	})
 	.parseSync();
 
-argv.ver = argv.ver || (await readVersion());
+argv.ver = argv.ver || (await readVersion(WORK_DIR));
 
 console.log("argv", JSON.stringify(argv, null, 2));
 
@@ -40,11 +35,15 @@ const OUT_DIR = path.resolve(WORK_DIR, argv.out);
 
 await $`rm -rf ${OUT_DIR}`;
 
-await $`mkdir ${OUT_DIR}`;
+if (IS_WIN) {
+	await $`mkdir ${OUT_DIR}`;
+} else {
+	await $`mkdir -p ${OUT_DIR}`;
+}
 
 import * as R from "ramda";
 import { $ } from "zx";
-import { readVersion } from "./readVersion";
+import { readVersion } from "./utils/readVersion.mjs";
 
 const OSs = ["windows", "linux", "darwin"];
 const ARCHs = ["386", "amd64", "arm", "arm64"];
@@ -110,5 +109,3 @@ async function buildAll(metas) {
 await buildAll(metas);
 
 console.log("done");
-
-
