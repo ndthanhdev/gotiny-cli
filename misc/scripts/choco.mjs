@@ -30,6 +30,8 @@ if (IS_WIN) {
 	$.shell = "nu";
 }
 
+// FIXME: add copy binaries
+
 const VERSION = await readVersion(WORK_DIR);
 
 async function runWithVersion(version, runner) {
