@@ -23,6 +23,7 @@ dagger.#Plan & {
 		}
 		env: {
 			GITHUB_TOKEN: dagger.#Secret
+			CHOCO_TOKEN: dagger.#Secret
 		}
 	}
 
@@ -74,6 +75,18 @@ dagger.#Plan & {
 				input: run.output.rootfs
 				path:  "/src/out"
 			}
+		}
+
+		chocoPack: {
+
+		}
+
+		chocoRelease: {
+			
+		}
+
+		release: {
+
 		}
 	}
 }

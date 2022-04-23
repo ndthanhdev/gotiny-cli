@@ -141,6 +141,8 @@ else
 {
     $binFile = "$toolsDir\$($packageArgs.packageName)-amd64.exe"
 }
+
+# FIXME: add unintall script
 Install-BinFile gotiny $binFile
 
 ##PORTABLE EXAMPLE

@@ -10,6 +10,19 @@ import * as fs from "fs/promises";
 import * as R from "ramda";
 import { $, cd } from "zx";
 import { readVersion, WORK_DIR } from "./utils.mjs";
+import yargs from "yargs";
+
+console.log("parsing argv");
+const argv = yargs(hideBin(process.argv))
+	.options("push", {
+		type: "boolean",
+		default: false,
+	})
+	.parseSync();
+
+argv.ver = await readVersion(WORK_DIR);
+
+console.log("argv", JSON.stringify(argv, null, 2));
 
 const IS_WIN = os.type() === "Windows_NT";
 
@@ -54,11 +67,15 @@ async function runWithVersion(version, runner) {
 	}
 }
 
-async function pack() {
-	const spec = path.resolve(WORK_DIR, "misc/choco/gotiny.nuspec");
-	const out = path.resolve(WORK_DIR, "out");
+const NUPKG_PATH = path.resolve(WORK_DIR, "out", `gotiny.${VERSION}.nupkg`);
+const SPEC_PATH = path.resolve(WORK_DIR, "misc/choco/gotiny.nuspec");
 
-	await $`choco pack ${spec} --outdir ${out}`;
+async function pack() {
+	await $`choco pack ${SPEC_PATH} --out ${NUPKG_PATH}`;
 }
 
 await runWithVersion(VERSION, pack);
+
+if (argv.push) {
+	await $`choco push ${NUPKG_PATH} -s https://push.chocolatey.org/`;
+}
