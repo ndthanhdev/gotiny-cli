@@ -5,11 +5,10 @@
 import "zx/globals";
 import path from "path";
 
-import * as fs from "fs/promises";
 
 $.shell = "nu";
 
-const WORK_DIR = path.resolve(__dirname, "../..");
+export const WORK_DIR = path.resolve(__dirname, "../..");
 
 console.log("moving to root");
 await cd(WORK_DIR);
@@ -45,6 +44,7 @@ await $`mkdir ${OUT_DIR}`;
 
 import * as R from "ramda";
 import { $ } from "zx";
+import { readVersion } from "./readVersion";
 
 const OSs = ["windows", "linux", "darwin"];
 const ARCHs = ["386", "amd64", "arm", "arm64"];
@@ -111,30 +111,4 @@ await buildAll(metas);
 
 console.log("done");
 
-async function readVersion() {
-	const rootGo = path.resolve(WORK_DIR, "cmd/root.go");
 
-	let lines = await fs.readFile(rootGo, {
-		encoding: "utf-8",
-	});
-
-	lines = lines.split(/\r?\n/);
-
-	const versionRgx = /(?<=var Version = ).+/g;
-	let versionLine = lines.find((line) => {
-		return versionRgx.test(line);
-	});
-
-	if (!versionLine) {
-		throw "Version line not found";
-	}
-
-	let verStr = versionLine.match(versionRgx)?.[0];
-	if (!verStr) {
-		throw "Version not found";
-	}
-
-	verStr = verStr.replaceAll(/\"/g, "");
-
-	return verStr;
-}
