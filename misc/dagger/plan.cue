@@ -25,7 +25,6 @@ dagger.#Plan & {
 			"../../out-choco": write: contents: actions.chocoPack.contents.output
 		}
 		env: {
-			GITHUB_TOKEN: dagger.#Secret
 			CHOCO_TOKEN: dagger.#Secret
 		}
 	}
@@ -139,9 +138,13 @@ dagger.#Plan & {
 		chocoPush: {
 			push: bash.#Run & {
 				input: chocoPack.pack.output
-				workdir: "/src/out-choco"
+				env: {
+					CHOCO_TOKEN: client.env.CHOCO_TOKEN
+				}
+				workdir: "/src"
 				script: contents: #"""
-					./misc/scripts/choco-push.mjs
+					source /root/.bashrc
+					/src/misc/scripts/chocoPush.mjs
 				"""#
 			}
 		}

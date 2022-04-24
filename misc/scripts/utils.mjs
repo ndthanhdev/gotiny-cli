@@ -1,5 +1,8 @@
 "use strict";
 import path from "path";
+import os from "os";
+
+export const IS_WIN = os.type() === "Windows_NT";
 
 export const WORK_DIR = path.resolve(__dirname, "../../");
 
