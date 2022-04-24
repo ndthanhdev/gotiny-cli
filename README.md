@@ -20,6 +20,9 @@ brew install gotiny
 **Linux:**  
 Via binary, apt (planned)
 
+**go install**  
+(planned)
+
 ## Usage
 
 **Simple:**  
