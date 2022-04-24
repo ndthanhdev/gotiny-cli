@@ -5,6 +5,8 @@ export const WORK_DIR = path.resolve(__dirname, "../../");
 
 export const OUT_DIR = path.resolve(WORK_DIR, "out");
 
+export const OUT_CHOCO_DIR = path.resolve(WORK_DIR, "out-choco");
+
 export async function readVersion() {
 	const rootGo = path.resolve(WORK_DIR, "cmd/root.go");
 

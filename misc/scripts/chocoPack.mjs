@@ -9,7 +9,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { $ } from 'zx';
 
-import { OUT_DIR, readVersion, WORK_DIR } from './utils.mjs';
+import { OUT_DIR, OUT_CHOCO_DIR, readVersion, WORK_DIR } from './utils.mjs';
 
 
 "use strict";
@@ -32,7 +32,15 @@ if (IS_WIN) {
 	$.shell = "nu";
 }
 
-// FIXME: add copy binaries
+await $`rm -rf ${OUT_CHOCO_DIR}`;
+
+if (IS_WIN) {
+	await $`mkdir ${OUT_CHOCO_DIR}`;
+} else {
+	await $`mkdir -p ${OUT_CHOCO_DIR}`;
+}
+
+
 
 const VERSION = await readVersion();
 const CHOCO_TOOLS_DIR = path.resolve(WORK_DIR, "misc/choco/tools");
@@ -89,7 +97,7 @@ async function runWithVersion(version, runner) {
 const SPEC_PATH = path.resolve(WORK_DIR, "misc/choco/gotiny.nuspec");
 
 async function pack() {
-	await $`choco pack ${SPEC_PATH} --out ${OUT_DIR}`;
+	await $`choco pack ${SPEC_PATH} --out ${OUT_CHOCO_DIR}`;
 }
 
 await runWithVersion(VERSION, pack);

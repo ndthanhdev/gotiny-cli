@@ -16,12 +16,13 @@ dagger.#Plan & {
 					exclude: [
 						"node_modules",
 						"out",
+						"out-dir",
 					]
 				}
 
 			"../../out": write: contents: actions.build.contents.output
 
-			// "../../out": write: contents: actions.chocoPack.contents.output
+			"../../out-choco": write: contents: actions.chocoPack.contents.output
 		}
 		env: {
 			GITHUB_TOKEN: dagger.#Secret
@@ -86,6 +87,10 @@ dagger.#Plan & {
 						source: "chocolatey/choco"
 					},
 					docker.#Copy & {
+						contents: _rootDir.read.contents
+						dest:     "/src"
+					},
+					docker.#Copy & {
 						contents: build.contents.output
 						dest:     "/src/out"
 					},
@@ -100,6 +105,8 @@ dagger.#Plan & {
 							nvm alias default 18
 
 							npm i -g yarn
+
+							npm i -g zx
 						"""#
 					},
 				]
@@ -107,13 +114,6 @@ dagger.#Plan & {
 
 			pack: bash.#Run & {
 				input: _image.output
-				mounts: {
-					"/src": {
-						type: "fs"
-						dest: "/src",
-						contents: _rootDir.read.contents
-					}
-				}
 				workdir: "/src"
 				script: contents: #"""
 					source /root/.bashrc
@@ -121,19 +121,24 @@ dagger.#Plan & {
 					node -v
 
 					yarn --version
+
+					yarn install
+
+					ls /src/out
 					
+					./misc/scripts/chocoPack.mjs
 				"""#
 			}
 
 			contents: core.#Subdir & {
 				input: pack.output.rootfs
-				path:  "/src/out"
+				path:  "/src/out-choco"
 			}
 		}
 
-		// chocoRelease: {
+		chocoPush: {
 			
-		// }
+		}
 
 		// release: {
 
