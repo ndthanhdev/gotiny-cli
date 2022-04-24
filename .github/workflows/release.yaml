@@ -6,14 +6,7 @@ on:
       - "v*.*.*"
 
 jobs:
-  build:
-    uses: ./.github/workflows/build.yaml
-    with:
-      ref: ${{ github.ref }}
-
   release:
-    needs:
-      - build
     runs-on: ubuntu-latest
     steps:
       - run: |

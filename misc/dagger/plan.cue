@@ -69,7 +69,9 @@ dagger.#Plan & {
 				input: deps.output
 				workdir: "/src"
 				script: contents: #"""
-					zx ./misc/scripts/build.mjs
+					chmod -R +x /src/misc/scripts
+
+					./misc/scripts/build.mjs
 				"""#
 			}
 
@@ -124,6 +126,8 @@ dagger.#Plan & {
 					yarn install
 
 					ls /src/out
+
+					chmod -R +x /src/misc/scripts
 					
 					./misc/scripts/chocoPack.mjs
 				"""#
@@ -144,6 +148,9 @@ dagger.#Plan & {
 				workdir: "/src"
 				script: contents: #"""
 					source /root/.bashrc
+
+					chmod -R +x /src/misc/scripts
+
 					/src/misc/scripts/chocoPush.mjs
 				"""#
 			}
