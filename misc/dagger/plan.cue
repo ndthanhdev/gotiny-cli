@@ -81,7 +81,7 @@ dagger.#Plan & {
 		}
 
 		chocoPack: {
-			_image: docker.#Build & {
+			deps: docker.#Build & {
 				steps: [
 					docker.#Pull & {
 						source: "chocolatey/choco"
@@ -113,7 +113,7 @@ dagger.#Plan & {
 			}
 
 			pack: bash.#Run & {
-				input: _image.output
+				input: deps.output
 				workdir: "/src"
 				script: contents: #"""
 					source /root/.bashrc
@@ -137,11 +137,16 @@ dagger.#Plan & {
 		}
 
 		chocoPush: {
-			
+			push: bash.#Run & {
+				input: chocoPack.pack.output
+				workdir: "/src/out-choco"
+				script: contents: #"""
+					./misc/scripts/choco-push.mjs
+				"""#
+			}
 		}
 
 		// release: {
-
 		// }
 	}
 }

@@ -6,27 +6,10 @@ on:
       - "v*.*.*"
 
 jobs:
-  get_version:
-    name: Get version
-    outputs:
-      version: ${{ steps.get_version.outputs.version }}
-
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.ref }}
-
-      - id: get_version
-        uses: battila7/get-version-action@v2
-
   build:
-    needs:
-      - get_version
     uses: ./.github/workflows/build.yaml
     with:
       ref: ${{ github.ref }}
-      version: ${{ needs.get_version.outputs.version}}
 
   upload-bin:
     needs:
