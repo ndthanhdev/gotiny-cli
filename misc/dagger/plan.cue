@@ -20,6 +20,8 @@ dagger.#Plan & {
 				}
 
 			"../../out": write: contents: actions.build.contents.output
+
+			// "../../out": write: contents: actions.chocoPack.contents.output
 		}
 		env: {
 			GITHUB_TOKEN: dagger.#Secret
@@ -68,7 +70,7 @@ dagger.#Plan & {
 				workdir: "/src"
 				script: contents: #"""
 					zx ./misc/scripts/build.mjs
-					"""#
+				"""#
 			}
 
 			contents: core.#Subdir & {
@@ -78,15 +80,63 @@ dagger.#Plan & {
 		}
 
 		chocoPack: {
+			_image: docker.#Build & {
+				steps: [
+					docker.#Pull & {
+						source: "chocolatey/choco"
+					},
+					docker.#Copy & {
+						contents: build.contents.output
+						dest:     "/src/out"
+					},
+					bash.#Run & {
+						script: contents: #"""
+							curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
+							source /root/.bashrc
+
+							nvm install 18
+
+							nvm alias default 18
+
+							npm i -g yarn
+						"""#
+					},
+				]
+			}
+
+			pack: bash.#Run & {
+				input: _image.output
+				mounts: {
+					"/src": {
+						type: "fs"
+						dest: "/src",
+						contents: _rootDir.read.contents
+					}
+				}
+				workdir: "/src"
+				script: contents: #"""
+					source /root/.bashrc
+
+					node -v
+
+					yarn --version
+					
+				"""#
+			}
+
+			contents: core.#Subdir & {
+				input: pack.output.rootfs
+				path:  "/src/out"
+			}
 		}
 
-		chocoRelease: {
+		// chocoRelease: {
 			
-		}
+		// }
 
-		release: {
+		// release: {
 
-		}
+		// }
 	}
 }

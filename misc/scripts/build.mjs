@@ -7,6 +7,8 @@ import path from "path";
 import os from "os";
 import * as R from "ramda";
 import { $ } from "zx";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 import { readVersion, WORK_DIR } from "./utils.mjs";
 
 const IS_WIN = os.type() === "Windows_NT";
@@ -17,9 +19,6 @@ if (IS_WIN) {
 
 console.log("moving to root");
 await cd(WORK_DIR);
-
-import yargs from "yargs";
-import { hideBin } from "yargs/helpers";
 
 console.log("parsing argv");
 const argv = yargs(hideBin(process.argv))

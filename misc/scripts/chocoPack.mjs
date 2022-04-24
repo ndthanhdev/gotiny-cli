@@ -1,16 +1,18 @@
 #!/usr/bin/env zx
+import 'zx/globals';
+
+import { XMLParser } from 'fast-xml-parser';
+import * as fs from 'fs/promises';
+import os from 'os';
+import path from 'path';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { $ } from 'zx';
+
+import { OUT_DIR, readVersion, WORK_DIR } from './utils.mjs';
+
 
 "use strict";
-
-import "zx/globals";
-import path from "path";
-import os from "os";
-import { XMLParser, XMLBuilder } from "fast-xml-parser";
-import * as fs from "fs/promises";
-import * as R from "ramda";
-import { $, cd } from "zx";
-import { readVersion, WORK_DIR } from "./utils.mjs";
-import yargs from "yargs";
 
 console.log("parsing argv");
 const argv = yargs(hideBin(process.argv))
@@ -32,7 +34,22 @@ if (IS_WIN) {
 
 // FIXME: add copy binaries
 
-const VERSION = await readVersion(WORK_DIR);
+const VERSION = await readVersion();
+const CHOCO_TOOLS_DIR = path.resolve(WORK_DIR, "misc/choco/tools");
+
+async function copyBinaries() {
+	console.log("Copying binaries");
+	const Bin32 = path.join(OUT_DIR, `gotiny-${VERSION}-windows-386.exe`);
+	const Bin64 = path.join(OUT_DIR, `gotiny-${VERSION}-windows-amd64.exe`);
+
+	const Bin32Dest = path.join(CHOCO_TOOLS_DIR, `gotiny-386.exe`);
+	const Bin64Dest = path.join(CHOCO_TOOLS_DIR, `gotiny-amd64.exe`);
+
+	await $`cp ${Bin32} ${Bin32Dest}`;
+	await $`cp ${Bin64} ${Bin64Dest}`;
+}
+
+await copyBinaries()
 
 async function runWithVersion(version, runner) {
 	const xmlPath = path.resolve(WORK_DIR, "misc/choco/gotiny.nuspec");
@@ -69,15 +86,11 @@ async function runWithVersion(version, runner) {
 	}
 }
 
-const NUPKG_PATH = path.resolve(WORK_DIR, "out", `gotiny.${VERSION}.nupkg`);
 const SPEC_PATH = path.resolve(WORK_DIR, "misc/choco/gotiny.nuspec");
 
 async function pack() {
-	await $`choco pack ${SPEC_PATH} --out ${NUPKG_PATH}`;
+	await $`choco pack ${SPEC_PATH} --out ${OUT_DIR}`;
 }
 
 await runWithVersion(VERSION, pack);
 
-if (argv.push) {
-	await $`choco push ${NUPKG_PATH} -s https://push.chocolatey.org/`;
-}
