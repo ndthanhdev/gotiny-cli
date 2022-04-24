@@ -4,30 +4,30 @@
 
 import "zx/globals";
 import path from "path";
+import os from "os";
+import * as R from "ramda";
+import { $ } from "zx";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
+import { readVersion, WORK_DIR } from "./utils.mjs";
 
-const WORK_DIR = path.resolve(__dirname, "../..");
+const IS_WIN = os.type() === "Windows_NT";
+
+if (IS_WIN) {
+	$.shell = "nu";
+}
 
 console.log("moving to root");
 await cd(WORK_DIR);
 
-import yargs from "yargs";
-import { hideBin } from "yargs/helpers";
-
 console.log("parsing argv");
 const argv = yargs(hideBin(process.argv))
-	.options("ver", {
-		alias: "v",
-		demandOption: false,
-	})
 	.options("out", {
 		default: "./out",
 	})
-	.option("local", {
-		type: 'boolean',
-		demandOption: false,
-		default: false,
-	})
 	.parseSync();
+
+argv.ver = await readVersion(WORK_DIR);
 
 console.log("argv", JSON.stringify(argv, null, 2));
 
@@ -35,9 +35,11 @@ const OUT_DIR = path.resolve(WORK_DIR, argv.out);
 
 await $`rm -rf ${OUT_DIR}`;
 
-await $`mkdir -p ${OUT_DIR}`;
-
-import * as R from "ramda";
+if (IS_WIN) {
+	await $`mkdir ${OUT_DIR}`;
+} else {
+	await $`mkdir -p ${OUT_DIR}`;
+}
 
 const OSs = ["windows", "linux", "darwin"];
 const ARCHs = ["386", "amd64", "arm", "arm64"];

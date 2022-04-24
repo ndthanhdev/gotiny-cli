@@ -36,6 +36,8 @@ type ApiError struct {
 	} `json:"error"`
 }
 
+var Version = "1.0.6"
+
 func Execute() {
 
 	var useFallback bool
@@ -47,7 +49,7 @@ func Execute() {
 		Short: "Shorten any URL",
 		Long:  `Shorten any URL from terminal using gotiny.cc, a lightweight, fast, secure... URL shortener.`,
 
-		Version: "1.0.6",
+		Version: Version,
 
 		Args: cobra.RangeArgs(1, 1),
 

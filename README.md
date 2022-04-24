@@ -6,6 +6,11 @@ Using [gotiny.cc](https://gotiny.cc) the lightweight, fast, secure URL shortener
 
 ## Installation
 
+**Windows:**  
+```bash
+choco install gotiny -y
+```
+
 **MacOS:**
 ```bash
 brew tap ndthanhdev/tap
@@ -13,10 +18,10 @@ brew install gotiny
 ```
 
 **Linux:**  
-Via binary, apt(wip)
+Via binary, apt (planned)
 
-**Windows:**  
-Via binary, choco(wip)
+**go install**  
+(planned)
 
 ## Usage
 
