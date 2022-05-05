@@ -1,4 +1,5 @@
 #!/usr/bin/env zx
+
 import 'zx/globals';
 
 import { XMLParser } from 'fast-xml-parser';

@@ -38,14 +38,14 @@ dagger.#Plan & {
 					packages: {
 						bash: {}
 						git: {}
-						nodejs: {}
+						npm: {}
 						yarn: {}
 						go: {}
 					}
 				},
 				bash.#Run & {
 					script: contents: #"""
-						yarn global add zx
+						npm i -g zx
 					"""#
 				},
 				docker.#Copy & {
@@ -54,9 +54,6 @@ dagger.#Plan & {
 				},
 				bash.#Run & {
 					workdir: "/src"
-					mounts: {
-						// _nodeModulesMount
-					}
 					script: contents: #"""
 						yarn install
 					"""#
@@ -69,9 +66,9 @@ dagger.#Plan & {
 				input: deps.output
 				workdir: "/src"
 				script: contents: #"""
-					chmod -R +x /src/misc/scripts
+					chmod -R +x /src/misc/scripts/
 
-					./misc/scripts/build.mjs
+					zx /src/misc/scripts/build.mjs
 				"""#
 			}
 
@@ -129,7 +126,7 @@ dagger.#Plan & {
 
 					chmod -R +x /src/misc/scripts
 					
-					./misc/scripts/chocoPack.mjs
+					zx /src/misc/scripts/chocoPack.mjs
 				"""#
 			}
 
@@ -151,12 +148,9 @@ dagger.#Plan & {
 
 					chmod -R +x /src/misc/scripts
 
-					/src/misc/scripts/chocoPush.mjs
+					zx /src/misc/scripts/chocoPush.mjs
 				"""#
 			}
 		}
-
-		// release: {
-		// }
 	}
 }
