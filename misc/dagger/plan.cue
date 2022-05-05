@@ -45,7 +45,8 @@ dagger.#Plan & {
 				},
 				bash.#Run & {
 					script: contents: #"""
-						yarn global add zx
+						npm i -g zx
+						npm i -g yarn
 					"""#
 				},
 				docker.#Copy & {
@@ -155,8 +156,5 @@ dagger.#Plan & {
 				"""#
 			}
 		}
-
-		// release: {
-		// }
 	}
 }
