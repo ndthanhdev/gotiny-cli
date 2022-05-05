@@ -51,7 +51,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!--<bugTrackerUrl></bugTrackerUrl>-->
     <tags>gotiny gotiny.cc url-shorten cli</tags>
     <summary>A lightweight cli url shortener</summary>
-    <description>Using [gotiny.cc](https://gotiny.cc) the lightweight, fast, secure URL shortener from the command line.</description>
+    <description>Using gotiny.cc the lightweight, fast, secure URL shortener from the command line.</description>
     <!-- <releaseNotes>__REPLACE_OR_REMOVE__MarkDown_Okay</releaseNotes> -->
     <!-- =============================== -->
 
